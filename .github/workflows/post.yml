@@ -1,0 +1,15 @@
+name: post
+on:
+  workflow_dispatch:
+    inputs:
+      sha: {required: true}
+      conclusion: {required: true}
+permissions:
+  checks: write
+jobs:
+  post:
+    runs-on: ubuntu-latest
+    steps:
+      - env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh api -X POST repos/${{ github.repository }}/check-runs -f name=scratch-cra -f head_sha=${{ inputs.sha }} -f status=completed -f conclusion=${{ inputs.conclusion }} --jq .id
